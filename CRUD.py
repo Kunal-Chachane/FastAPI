@@ -5,42 +5,54 @@ app = FastAPI()
 
 todos = []
 
-class Todo(BaseModel):
-    id:int
-    title:str
-    completed:bool
+class User(BaseModel):
+    id: int
+    title: str
+    complete: bool
 
+# CREATE
 @app.post("/todos")
-def create_todo(todo:Todo):
+def create_todo(todo: User):
     todos.append(todo)
-    return {"message":"TODO added","data":todo}
+    return {
+        "Message": "TODO created successfully",
+        "Data": todo
+    }
 
+# READ
 @app.get("/todos")
-def get_todos():
+def get_all_todos():
     return todos
 
+
 @app.get("/todos/{todo_id}")
-def get_todo(todo_id:int):
+def get_todo(todo_id: int):
     for todo in todos:
         if todo.id == todo_id:
             return todo
-    return {"error":"Todo not found"}
+    return {"Error": "TODO not found"}
 
+
+# UPDATE
 @app.put("/todos/{todo_id}")
-def update_todo(todo_id:int,updated_todo:Todo):
-    for index,todo in enumerate(todos):
-        if todo.id == todo_id:
-            todos[index] = updated_todo
+def update_todo(todo_id: int, updated_todo: User):
+    for i in range(len(todos)):
+        if todos[i].id == todo_id:
+            todos[i] = updated_todo
             return {
-                "message":"Data Updated",
-                "data": updated_todo
+                "Message": "TODO updated successfully",
+                "Data": updated_todo
             }
-    return {"error":"Todo not found"}
+    return {"Error": "TODO not found"}
 
+# DELETE
 @app.delete("/todos/{todo_id}")
-def delete_todo(todo_id:int):
-    for index, todo in enumerate(todos):
-        if todo.id == todo_id:
-            todos.pop(index)
-            return {"message":"Data Deleted"}
-    return {"error":"Todo not found"}
+def delete_todo(todo_id: int):
+    for i in range(len(todos)):
+        if todos[i].id == todo_id:
+            deleted_todo = todos.pop(i)
+            return {
+                "Message": "TODO deleted successfully",
+                "Data": deleted_todo
+            }
+    return {"Error": "TODO not found"}
